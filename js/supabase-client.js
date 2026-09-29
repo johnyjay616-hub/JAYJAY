@@ -1,2 +1,3 @@
 window.CONNECTWORLD_SUPABASE_URL="https://nwpvdhtprntrxhcuyxiv.supabase.co";
 window.CONNECTWORLD_SUPABASE_ANON_KEY="sb_publishable_7CIj4W7-pMRcTsGyOnFMEg_foDgnoJf";
+window.connectWorldSupabase=window.supabase.createClient(window.CONNECTWORLD_SUPABASE_URL,window.CONNECTWORLD_SUPABASE_ANON_KEY);

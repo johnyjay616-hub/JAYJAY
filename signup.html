@@ -31,7 +31,7 @@ document.getElementById("signupForm").addEventListener("submit",async function(e
   const {data,error}=await window.connectWorldSupabase.auth.signUp({
    email:document.getElementById("email").value.trim(),
    password:document.getElementById("password").value,
-   options:{data:{
+   options:{emailRedirectTo:"https://johnyjay616-hub.github.io/JAYJAY/",data:{
     full_name:document.getElementById("name").value.trim(),
     username:document.getElementById("username").value.trim(),
     country:document.getElementById("country").value.trim()

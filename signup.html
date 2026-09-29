@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign up — ConnectWorld</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+<main class="w-full max-w-md bg-white rounded-3xl shadow-xl p-7">
+<a href="./" class="text-blue-600 font-bold">← Back to ConnectWorld</a>
+<h1 class="text-3xl font-black mt-6">Create your account</h1>
+<p class="text-slate-500 mt-2">Meet new friends around the world.</p>
+<form id="signupForm" class="mt-6 grid gap-3">
+<input id="name" required class="border rounded-xl p-3" placeholder="Full name">
+<input id="username" required class="border rounded-xl p-3" placeholder="Username">
+<input id="country" required class="border rounded-xl p-3" placeholder="Country">
+<input id="email" required type="email" class="border rounded-xl p-3" placeholder="Email address">
+<input id="password" required minlength="6" type="password" class="border rounded-xl p-3" placeholder="Password (6+ characters)">
+<button id="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold">Create account</button>
+</form>
+<p id="message" class="mt-4 text-sm"></p>
+<p class="mt-5 text-sm text-slate-500">Already have an account? <a class="text-blue-600 font-semibold" href="./">Log in from the home page</a></p>
+</main>
+<script>
+document.getElementById("signupForm").addEventListener("submit",async function(e){
+ e.preventDefault();
+ const btn=document.getElementById("submit"), msg=document.getElementById("message");
+ btn.disabled=true; btn.textContent="Creating account..."; msg.textContent="";
+ try{
+  const {data,error}=await window.connectWorldSupabase.auth.signUp({
+   email:document.getElementById("email").value.trim(),
+   password:document.getElementById("password").value,
+   options:{data:{
+    full_name:document.getElementById("name").value.trim(),
+    username:document.getElementById("username").value.trim(),
+    country:document.getElementById("country").value.trim()
+   }}
+  });
+  if(error) throw error;
+  msg.className="mt-4 text-sm text-green-600";
+  msg.textContent=data.session?"Account created successfully!":"Account created. Check your email to confirm it, then log in.";
+  btn.textContent="Account created";
+ }catch(err){
+  msg.className="mt-4 text-sm text-red-600";
+  msg.textContent=err.message||"Could not create account.";
+  btn.disabled=false; btn.textContent="Create account";
+ }
+});
+</script></body></html>

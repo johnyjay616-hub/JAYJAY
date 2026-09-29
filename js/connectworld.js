@@ -2,10 +2,10 @@
  const db=()=>window.connectWorldSupabase;
  const ok=()=>!!db();
  async function user(){if(!ok())return null;const {data}=await db().auth.getUser();return data.user||null}
- async function profile(id){const {data,error}=await db().from("profiles").select("*").eq("id",id).single();if(error)throw error;return data}
+ async function profile(id){const {data,error}=await db().from("profiles").select("*").eq("id",id).single();if(error)throw error;return data} async function ensureProfile(){const u=await user();if(!u)return null;let {data,error}=await db().from("profiles").select("*").eq("id",u.id).maybeSingle();if(error)throw error;if(!data){const m=u.user_metadata||{};const ins=await db().from("profiles").insert({id:u.id,username:m.username||("user_"+u.id.slice(0,8)),full_name:m.full_name||"ConnectWorld User",country:m.country||null}).select().single();if(ins.error)throw ins.error;data=ins.data}return data}
  async function notify(userId,type,message,entityId=null){const u=await user();if(!u||!userId||u.id===userId)return;const {error}=await db().from("notifications").insert({user_id:userId,actor_id:u.id,type,message,entity_id:entityId});if(error)console.warn(error)}
  async function signUp(email,password,meta){const {data,error}=await db().auth.signUp({email,password,options:{emailRedirectTo:"https://johnyjay616-hub.github.io/JAYJAY/",data:meta}});if(error)throw error;return data}
- async function signIn(email,password){const {data,error}=await db().auth.signInWithPassword({email,password});if(error)throw error;return data}
+ async function signIn(email,password){const {data,error}=await db().auth.signInWithPassword({email:email.trim(),password});if(error)throw error;await ensureProfile();return data}
  async function signOut(){const {error}=await db().auth.signOut();if(error)throw error}
  async function resetPassword(email){const {error}=await db().auth.resetPasswordForEmail(email,{redirectTo:location.href});if(error)throw error}
  async function updateProfile(values){const u=await user();if(!u)throw Error("Please log in.");const {data,error}=await db().from("profiles").update(values).eq("id",u.id).select().single();if(error)throw error;return data}

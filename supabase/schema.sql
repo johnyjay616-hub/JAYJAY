@@ -104,6 +104,26 @@ end; $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
 
-alter publication supabase_realtime add table public.messages;
-alter publication supabase_realtime add table public.notifications;
-alter publication supabase_realtime add table public.posts;
+insert into storage.buckets(id,name,public) values('connectworld-media','connectworld-media',true)
+on conflict(id) do update set public=true;
+drop policy if exists "ConnectWorld public media read" on storage.objects;
+create policy "ConnectWorld public media read" on storage.objects for select using (bucket_id='connectworld-media');
+drop policy if exists "ConnectWorld media upload" on storage.objects;
+create policy "ConnectWorld media upload" on storage.objects for insert to authenticated
+with check (bucket_id='connectworld-media' and name like '%/'||auth.uid()::text||'-%');
+
+do $$
+begin
+ alter publication supabase_realtime add table public.messages;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+ alter publication supabase_realtime add table public.notifications;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+ alter publication supabase_realtime add table public.posts;
+exception when duplicate_object then null;
+end $$;

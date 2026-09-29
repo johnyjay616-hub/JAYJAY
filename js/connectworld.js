@@ -4,7 +4,7 @@
  async function user(){if(!ok())return null;const {data}=await db().auth.getUser();return data.user||null}
  async function profile(id){const {data,error}=await db().from("profiles").select("*").eq("id",id).single();if(error)throw error;return data}
  async function notify(userId,type,message,entityId=null){const u=await user();if(!u||!userId||u.id===userId)return;const {error}=await db().from("notifications").insert({user_id:userId,actor_id:u.id,type,message,entity_id:entityId});if(error)console.warn(error)}
- async function signUp(email,password,meta){const {data,error}=await db().auth.signUp({email,password,options:{data:meta}});if(error)throw error;return data}
+ async function signUp(email,password,meta){const {data,error}=await db().auth.signUp({email,password,options:{emailRedirectTo:"https://johnyjay616-hub.github.io/JAYJAY/",data:meta}});if(error)throw error;return data}
  async function signIn(email,password){const {data,error}=await db().auth.signInWithPassword({email,password});if(error)throw error;return data}
  async function signOut(){const {error}=await db().auth.signOut();if(error)throw error}
  async function resetPassword(email){const {error}=await db().auth.resetPasswordForEmail(email,{redirectTo:location.href});if(error)throw error}

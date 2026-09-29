@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log in — ConnectWorld</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/connectworld.js"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+<main class="w-full max-w-md bg-white rounded-3xl shadow-xl p-7">
+<a href="./" class="text-blue-600 font-bold">← Back to ConnectWorld</a>
+<h1 class="text-3xl font-black mt-6">Welcome back</h1>
+<p class="text-slate-500 mt-2">Log in to your ConnectWorld account.</p>
+<form id="loginForm" class="mt-6 grid gap-3">
+<input id="email" required type="email" autocomplete="email" class="border rounded-xl p-3" placeholder="Email address">
+<input id="password" required type="password" autocomplete="current-password" class="border rounded-xl p-3" placeholder="Password">
+<button id="submit" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold">Log in</button>
+</form>
+<p id="message" class="mt-4 text-sm"></p>
+<div class="mt-5 flex justify-between text-sm">
+<a href="./signup.html" class="text-blue-600 font-semibold">Create an account</a>
+<button id="reset" type="button" class="text-blue-600 font-semibold">Forgot password?</button>
+</div>
+</main>
+<script>
+const form=document.getElementById("loginForm");
+const btn=document.getElementById("submit");
+const msg=document.getElementById("message");
+form.addEventListener("submit",async function(e){
+ e.preventDefault();
+ btn.disabled=true; btn.textContent="Logging in..."; msg.textContent="";
+ try{
+   if(!window.ConnectWorld) throw new Error("ConnectWorld is still loading. Please refresh.");
+   await window.ConnectWorld.signIn(document.getElementById("email").value,document.getElementById("password").value);
+   msg.className="mt-4 text-sm text-green-600";
+   msg.textContent="Login successful. Redirecting...";
+   window.location.href="./";
+ }catch(err){
+   msg.className="mt-4 text-sm text-red-600";
+   msg.textContent=err.message||"Could not log in.";
+   btn.disabled=false; btn.textContent="Log in";
+ }
+});
+document.getElementById("reset").addEventListener("click",async function(){
+ const email=document.getElementById("email").value.trim();
+ if(!email){msg.className="mt-4 text-sm text-red-600";msg.textContent="Enter your email address first.";return;}
+ try{await ConnectWorld.resetPassword(email);msg.className="mt-4 text-sm text-green-600";msg.textContent="Password reset email sent.";}
+ catch(err){msg.className="mt-4 text-sm text-red-600";msg.textContent=err.message||"Could not send reset email.";}
+});
+</script>
+</body>
+</html>

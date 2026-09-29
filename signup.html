@@ -17,10 +17,10 @@
 <input id="country" required class="border rounded-xl p-3" placeholder="Country">
 <input id="email" required type="email" class="border rounded-xl p-3" placeholder="Email address">
 <input id="password" required minlength="6" type="password" class="border rounded-xl p-3" placeholder="Password (6+ characters)">
-<button id="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold">Create account</button>
+<a href="login.html" class="text-center text-blue-600 font-semibold">Already have an account? Log in</a><button id="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold">Create account</button>
 </form>
 <p id="message" class="mt-4 text-sm"></p>
-<p class="mt-5 text-sm text-slate-500">Already have an account? <a class="text-blue-600 font-semibold" href="./">Log in from the home page</a></p>
+
 </main>
 <script>
 document.getElementById("signupForm").addEventListener("submit",async function(e){
